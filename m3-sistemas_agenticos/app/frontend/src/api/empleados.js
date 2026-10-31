@@ -8,8 +8,16 @@ export async function obtenerDepartamentos() {
   return respuesta.json();
 }
 
-export async function listarEmpleados() {
-  const respuesta = await fetch(`${URL_BASE}/empleados`);
+export async function listarEmpleados(filtros = {}) {
+  const parametros = new URLSearchParams();
+  if (filtros.buscar) {
+    parametros.set("buscar", filtros.buscar);
+  }
+  if (filtros.departamento) {
+    parametros.set("departamento", filtros.departamento);
+  }
+  const cadena = parametros.toString();
+  const respuesta = await fetch(`${URL_BASE}/empleados${cadena ? `?${cadena}` : ""}`);
   if (!respuesta.ok) {
     throw new Error("No se pudo cargar el directorio de empleados");
   }

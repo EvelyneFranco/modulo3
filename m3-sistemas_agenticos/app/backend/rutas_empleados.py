@@ -1,5 +1,5 @@
 """Rutas del recurso /api/empleados."""
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -44,5 +44,18 @@ def crear_empleado(datos: EmpleadoCrear, sesion: Session = Depends(obtener_sesio
 
 
 @router.get("", response_model=list[EmpleadoSalida])
-def listar_empleados(sesion: Session = Depends(obtener_sesion)) -> list[Empleado]:
-    return list(sesion.execute(select(Empleado).order_by(Empleado.id)).scalars().all())
+def listar_empleados(
+    buscar: str | None = Query(default=None),
+    departamento: str | None = Query(default=None),
+    sesion: Session = Depends(obtener_sesion),
+) -> list[Empleado]:
+    consulta = select(Empleado)
+    if buscar:
+        texto = f"%{buscar.strip().lower()}%"
+        consulta = consulta.where(
+            func.lower(Empleado.nombre).like(texto) | func.lower(Empleado.correo).like(texto)
+        )
+    if departamento:
+        consulta = consulta.where(Empleado.departamento == departamento)
+    consulta = consulta.order_by(Empleado.id)
+    return list(sesion.execute(consulta).scalars().all())

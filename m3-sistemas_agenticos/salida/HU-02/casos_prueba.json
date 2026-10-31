@@ -1,0 +1,273 @@
+{
+  "historia": "HU-02",
+  "casos": [
+    {
+      "id": "CP-01",
+      "escenario": "Ver el directorio con los datos principales de cada empleado",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0001 con nombre \"Laura Gómez\", puesto \"Analista de Nómina\", departamento \"Recursos Humanos\" y estado \"activo\""
+      ],
+      "pasos": [
+        "Enviar GET a /api/empleados"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0001",
+        "nombre": "Laura Gómez",
+        "puesto": "Analista de Nómina",
+        "departamento": "Recursos Humanos",
+        "estado": "activo"
+      },
+      "resultado_esperado": "La respuesta tiene código 200 y el arreglo incluye un empleado con numero_empleado \"EMP-0001\", nombre \"Laura Gómez\", puesto \"Analista de Nómina\", departamento \"Recursos Humanos\" y estado \"activo\""
+    },
+    {
+      "id": "CP-02",
+      "escenario": "Ver el directorio con los datos principales de cada empleado",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0001 con nombre \"Laura Gómez\", puesto \"Analista de Nómina\", departamento \"Recursos Humanos\" y estado \"activo\""
+      ],
+      "pasos": [
+        "Abrir la página del directorio de empleados",
+        "Verificar que la tabla data-testid=tabla-empleados esté visible",
+        "Ubicar la fila data-testid=fila-empleado-{id} correspondiente al empleado EMP-0001",
+        "Verificar que data-testid=numero-empleado-{id} muestre \"EMP-0001\"",
+        "Verificar que la fila muestre el nombre \"Laura Gómez\", el puesto \"Analista de Nómina\" y el departamento \"Recursos Humanos\"",
+        "Verificar que data-testid=estado-empleado-{id} muestre \"Activo\""
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0001",
+        "nombre": "Laura Gómez",
+        "puesto": "Analista de Nómina",
+        "departamento": "Recursos Humanos",
+        "estado": "Activo"
+      },
+      "resultado_esperado": "La fila del empleado EMP-0001 se muestra en la tabla con nombre, puesto, departamento y estado correctos"
+    },
+    {
+      "id": "CP-03",
+      "escenario": "Buscar por nombre en minúsculas encuentra coincidencias sin importar mayúsculas",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0002 con nombre \"Carlos Ramírez\" y correo \"carlos.ramirez@empresa.com\""
+      ],
+      "pasos": [
+        "Enviar GET a /api/empleados?buscar=carlos ramirez"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0002",
+        "nombre": "Carlos Ramírez",
+        "correo": "carlos.ramirez@empresa.com",
+        "buscar": "carlos ramirez"
+      },
+      "resultado_esperado": "La respuesta tiene código 200 e incluye al empleado EMP-0002 en los resultados"
+    },
+    {
+      "id": "CP-04",
+      "escenario": "Buscar por nombre en minúsculas encuentra coincidencias sin importar mayúsculas",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0002 con nombre \"Carlos Ramírez\" y correo \"carlos.ramirez@empresa.com\""
+      ],
+      "pasos": [
+        "Abrir la página del directorio de empleados",
+        "Escribir \"carlos ramirez\" en el campo data-testid=buscar-empleados",
+        "Verificar que data-testid=fila-empleado-{id} correspondiente a EMP-0002 esté visible en los resultados"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0002",
+        "nombre": "Carlos Ramírez",
+        "correo": "carlos.ramirez@empresa.com",
+        "buscar": "carlos ramirez"
+      },
+      "resultado_esperado": "El empleado EMP-0002 aparece en los resultados de la búsqueda"
+    },
+    {
+      "id": "CP-05",
+      "escenario": "Buscar por correo en mayúsculas encuentra coincidencias sin importar mayúsculas",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0003 con nombre \"Ana Torres\" y correo \"ana.torres@empresa.com\""
+      ],
+      "pasos": [
+        "Enviar GET a /api/empleados?buscar=ANA.TORRES@EMPRESA.COM"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0003",
+        "nombre": "Ana Torres",
+        "correo": "ana.torres@empresa.com",
+        "buscar": "ANA.TORRES@EMPRESA.COM"
+      },
+      "resultado_esperado": "La respuesta tiene código 200 e incluye al empleado EMP-0003 en los resultados"
+    },
+    {
+      "id": "CP-06",
+      "escenario": "Buscar por correo en mayúsculas encuentra coincidencias sin importar mayúsculas",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0003 con nombre \"Ana Torres\" y correo \"ana.torres@empresa.com\""
+      ],
+      "pasos": [
+        "Abrir la página del directorio de empleados",
+        "Escribir \"ANA.TORRES@EMPRESA.COM\" en el campo data-testid=buscar-empleados",
+        "Verificar que data-testid=fila-empleado-{id} correspondiente a EMP-0003 esté visible en los resultados"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0003",
+        "nombre": "Ana Torres",
+        "correo": "ana.torres@empresa.com",
+        "buscar": "ANA.TORRES@EMPRESA.COM"
+      },
+      "resultado_esperado": "El empleado EMP-0003 aparece en los resultados de la búsqueda"
+    },
+    {
+      "id": "CP-07",
+      "escenario": "Filtrar por departamento muestra solo a los empleados de ese departamento",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0004 con nombre \"Pedro Salinas\" y departamento \"Ventas\"",
+        "Existe el empleado EMP-0005 con nombre \"Mónica Lira\" y departamento \"Tecnología\""
+      ],
+      "pasos": [
+        "Enviar GET a /api/empleados?departamento=Ventas"
+      ],
+      "datos": {
+        "numero_empleado_incluido": "EMP-0004",
+        "numero_empleado_excluido": "EMP-0005",
+        "departamento": "Ventas"
+      },
+      "resultado_esperado": "La respuesta tiene código 200, incluye a EMP-0004 y no incluye a EMP-0005"
+    },
+    {
+      "id": "CP-08",
+      "escenario": "Filtrar por departamento muestra solo a los empleados de ese departamento",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0004 con nombre \"Pedro Salinas\" y departamento \"Ventas\"",
+        "Existe el empleado EMP-0005 con nombre \"Mónica Lira\" y departamento \"Tecnología\""
+      ],
+      "pasos": [
+        "Abrir la página del directorio de empleados",
+        "Seleccionar \"Ventas\" en data-testid=filtro-departamento",
+        "Verificar que data-testid=fila-empleado-{id} correspondiente a EMP-0004 esté visible",
+        "Verificar que no exista data-testid=fila-empleado-{id} correspondiente a EMP-0005"
+      ],
+      "datos": {
+        "numero_empleado_incluido": "EMP-0004",
+        "numero_empleado_excluido": "EMP-0005",
+        "departamento": "Ventas"
+      },
+      "resultado_esperado": "Solo el empleado EMP-0004 se muestra en la tabla filtrada por Ventas"
+    },
+    {
+      "id": "CP-09",
+      "escenario": "Buscar un texto sin coincidencias muestra un mensaje de sin resultados",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0006 con nombre \"Sofía Mendoza\" y correo \"sofia.mendoza@empresa.com\""
+      ],
+      "pasos": [
+        "Enviar GET a /api/empleados?buscar=inexistente"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0006",
+        "buscar": "inexistente"
+      },
+      "resultado_esperado": "La respuesta tiene código 200 y el arreglo de resultados está vacío"
+    },
+    {
+      "id": "CP-10",
+      "escenario": "Buscar un texto sin coincidencias muestra un mensaje de sin resultados",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0006 con nombre \"Sofía Mendoza\" y correo \"sofia.mendoza@empresa.com\""
+      ],
+      "pasos": [
+        "Abrir la página del directorio de empleados",
+        "Escribir \"inexistente\" en el campo data-testid=buscar-empleados",
+        "Verificar que data-testid=sin-resultados esté visible con el texto \"No se encontraron resultados\""
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0006",
+        "buscar": "inexistente",
+        "mensaje": "No se encontraron resultados"
+      },
+      "resultado_esperado": "Se muestra el mensaje \"No se encontraron resultados\" en data-testid=sin-resultados"
+    },
+    {
+      "id": "CP-11",
+      "escenario": "Un empleado dado de baja sigue apareciendo en el directorio",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0007 con nombre \"Jorge Nieto\", estado \"baja\" y fecha de baja \"2024-03-10\""
+      ],
+      "pasos": [
+        "Enviar GET a /api/empleados"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0007",
+        "nombre": "Jorge Nieto",
+        "estado": "baja",
+        "fecha_baja": "2024-03-10"
+      },
+      "resultado_esperado": "La respuesta tiene código 200 e incluye al empleado EMP-0007 con estado \"baja\" y fecha_baja \"2024-03-10\""
+    },
+    {
+      "id": "CP-12",
+      "escenario": "Un empleado dado de baja sigue apareciendo en el directorio",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0007 con nombre \"Jorge Nieto\", estado \"baja\" y fecha de baja \"2024-03-10\""
+      ],
+      "pasos": [
+        "Abrir la página del directorio de empleados",
+        "Ubicar la fila data-testid=fila-empleado-{id} correspondiente al empleado EMP-0007",
+        "Verificar que data-testid=estado-empleado-{id} muestre \"Baja\""
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0007",
+        "nombre": "Jorge Nieto",
+        "estado": "Baja"
+      },
+      "resultado_esperado": "El empleado EMP-0007 aparece en el directorio con estado \"Baja\""
+    },
+    {
+      "id": "CP-13",
+      "escenario": "Combinar búsqueda y filtro de departamento sin coincidencias muestra un mensaje de sin resultados",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0008 con nombre \"Luis Peña\", departamento \"Finanzas\" y correo \"luis.pena@empresa.com\""
+      ],
+      "pasos": [
+        "Enviar GET a /api/empleados?departamento=Operaciones&buscar=Luis Peña"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0008",
+        "departamento": "Operaciones",
+        "buscar": "Luis Peña"
+      },
+      "resultado_esperado": "La respuesta tiene código 200 y el arreglo de resultados está vacío"
+    },
+    {
+      "id": "CP-14",
+      "escenario": "Combinar búsqueda y filtro de departamento sin coincidencias muestra un mensaje de sin resultados",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0008 con nombre \"Luis Peña\", departamento \"Finanzas\" y correo \"luis.pena@empresa.com\""
+      ],
+      "pasos": [
+        "Abrir la página del directorio de empleados",
+        "Seleccionar \"Operaciones\" en data-testid=filtro-departamento",
+        "Escribir \"Luis Peña\" en el campo data-testid=buscar-empleados",
+        "Verificar que data-testid=sin-resultados esté visible con el texto \"No se encontraron resultados\""
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0008",
+        "departamento": "Operaciones",
+        "buscar": "Luis Peña",
+        "mensaje": "No se encontraron resultados"
+      },
+      "resultado_esperado": "Se muestra el mensaje \"No se encontraron resultados\" al combinar filtro y búsqueda sin coincidencias"
+    }
+  ]
+}
