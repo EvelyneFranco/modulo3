@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { crearEmpleado, obtenerDepartamentos } from "../api/empleados";
+import { actualizarEmpleado, crearEmpleado, obtenerDepartamentos } from "../api/empleados";
 
 const ESTADO_INICIAL = {
   nombre: "",
@@ -9,17 +9,34 @@ const ESTADO_INICIAL = {
   fecha_ingreso: "",
 };
 
-function FormularioEmpleado({ onEmpleadoCreado }) {
+function FormularioEmpleado({ empleado, onEmpleadoCreado, onEmpleadoActualizado, onCancelar }) {
   const [datos, setDatos] = useState(ESTADO_INICIAL);
   const [departamentos, setDepartamentos] = useState([]);
   const [mensajeExito, setMensajeExito] = useState("");
   const [mensajeError, setMensajeError] = useState("");
+  const editando = Boolean(empleado);
 
   useEffect(() => {
     obtenerDepartamentos()
       .then(setDepartamentos)
       .catch(() => setDepartamentos([]));
   }, []);
+
+  useEffect(() => {
+    setMensajeExito("");
+    setMensajeError("");
+    setDatos(
+      empleado
+        ? {
+            nombre: empleado.nombre,
+            correo: empleado.correo,
+            puesto: empleado.puesto,
+            departamento: empleado.departamento,
+            fecha_ingreso: empleado.fecha_ingreso,
+          }
+        : ESTADO_INICIAL
+    );
+  }, [empleado]);
 
   function manejarCambio(evento) {
     const { name, value } = evento.target;
@@ -31,10 +48,19 @@ function FormularioEmpleado({ onEmpleadoCreado }) {
     setMensajeExito("");
     setMensajeError("");
     try {
-      const empleado = await crearEmpleado(datos);
-      setMensajeExito(`Empleado ${empleado.numero_empleado} registrado con éxito`);
-      setDatos(ESTADO_INICIAL);
-      onEmpleadoCreado(empleado);
+      if (editando) {
+        const actualizado = await actualizarEmpleado(empleado.id, {
+          puesto: datos.puesto,
+          departamento: datos.departamento,
+        });
+        setMensajeExito(`Empleado ${actualizado.numero_empleado} actualizado con éxito`);
+        onEmpleadoActualizado(actualizado);
+      } else {
+        const creado = await crearEmpleado(datos);
+        setMensajeExito(`Empleado ${creado.numero_empleado} registrado con éxito`);
+        setDatos(ESTADO_INICIAL);
+        onEmpleadoCreado(creado);
+      }
     } catch (error) {
       setMensajeError(error.message);
     }
@@ -42,7 +68,7 @@ function FormularioEmpleado({ onEmpleadoCreado }) {
 
   return (
     <form onSubmit={manejarEnvio}>
-      <h2>Registrar empleado</h2>
+      <h2>{editando ? "Editar empleado" : "Registrar empleado"}</h2>
       <div>
         <label htmlFor="nombre">Nombre</label>
         <input
@@ -51,6 +77,7 @@ function FormularioEmpleado({ onEmpleadoCreado }) {
           data-testid="empleado-nombre"
           value={datos.nombre}
           onChange={manejarCambio}
+          disabled={editando}
           required
         />
       </div>
@@ -63,6 +90,7 @@ function FormularioEmpleado({ onEmpleadoCreado }) {
           data-testid="empleado-correo"
           value={datos.correo}
           onChange={manejarCambio}
+          disabled={editando}
           required
         />
       </div>
@@ -104,12 +132,18 @@ function FormularioEmpleado({ onEmpleadoCreado }) {
           data-testid="empleado-fecha-ingreso"
           value={datos.fecha_ingreso}
           onChange={manejarCambio}
+          disabled={editando}
           required
         />
       </div>
       <button type="submit" data-testid="empleado-guardar">
         Guardar
       </button>
+      {editando && (
+        <button type="button" onClick={onCancelar}>
+          Cancelar
+        </button>
+      )}
       {mensajeExito && <p data-testid="mensaje-exito">{mensajeExito}</p>}
       {mensajeError && <p data-testid="mensaje-error">{mensajeError}</p>}
     </form>

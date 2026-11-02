@@ -1,0 +1,223 @@
+{
+  "historia": "HU-03",
+  "casos": [
+    {
+      "id": "CP-01",
+      "escenario": "Editar puesto y departamento de un empleado activo",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0001 con puesto 'Analista Jr.' y departamento 'Ventas' en estado 'activo'"
+      ],
+      "pasos": [
+        "Enviar PUT /api/empleados/EMP-0001 con body {\"puesto\": \"Analista Sr.\", \"departamento\": \"Finanzas\"}",
+        "Obtener GET /api/empleados/EMP-0001"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0001",
+        "puesto_nuevo": "Analista Sr.",
+        "departamento_nuevo": "Finanzas"
+      },
+      "resultado_esperado": "La respuesta del PUT es 200 y el GET posterior muestra puesto='Analista Sr.' y departamento='Finanzas'"
+    },
+    {
+      "id": "CP-02",
+      "escenario": "Editar puesto y departamento de un empleado activo",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0001 con puesto 'Analista Jr.' y departamento 'Ventas' en estado 'activo'",
+        "El directorio está cargado en pantalla"
+      ],
+      "pasos": [
+        "Hacer clic en data-testid='editar-empleado-EMP-0001'",
+        "Limpiar y escribir 'Analista Sr.' en data-testid='empleado-puesto'",
+        "Limpiar y escribir 'Finanzas' en data-testid='empleado-departamento'",
+        "Hacer clic en data-testid='empleado-guardar'"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0001",
+        "puesto_nuevo": "Analista Sr.",
+        "departamento_nuevo": "Finanzas"
+      },
+      "resultado_esperado": "Se muestra data-testid='mensaje-exito' y la fila data-testid='fila-empleado-EMP-0001' refleja el puesto y departamento actualizados"
+    },
+    {
+      "id": "CP-03",
+      "escenario": "No se puede editar el número de empleado ni el correo",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0002 con numero_empleado 'EMP-0002' y correo 'ana.lopez@empresa.com' en estado 'activo'"
+      ],
+      "pasos": [
+        "Enviar PUT /api/empleados/EMP-0002 con body {\"numero_empleado\": \"EMP-0099\", \"correo\": \"ana.nueva@empresa.com\"}",
+        "Obtener GET /api/empleados/EMP-0002"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0002",
+        "correo_original": "ana.lopez@empresa.com",
+        "numero_empleado_intentado": "EMP-0099",
+        "correo_intentado": "ana.nueva@empresa.com"
+      },
+      "resultado_esperado": "La respuesta del PUT es 422 con detail indicando que numero_empleado y correo no se pueden editar; el GET muestra que numero_empleado y correo no cambiaron"
+    },
+    {
+      "id": "CP-04",
+      "escenario": "No se puede editar el número de empleado ni el correo",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0002 con numero_empleado 'EMP-0002' y correo 'ana.lopez@empresa.com' en estado 'activo'"
+      ],
+      "pasos": [
+        "Hacer clic en data-testid='editar-empleado-EMP-0002'",
+        "Intentar modificar el valor de data-testid='empleado-correo' a 'ana.nueva@empresa.com'",
+        "Hacer clic en data-testid='empleado-guardar'"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0002",
+        "correo_intentado": "ana.nueva@empresa.com"
+      },
+      "resultado_esperado": "Se muestra data-testid='mensaje-error' indicando que numero_empleado y correo no se pueden editar y data-testid='numero-empleado-EMP-0002' conserva el valor original"
+    },
+    {
+      "id": "CP-05",
+      "escenario": "Editar con un departamento que no está en la lista permitida",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0003 con puesto 'Soporte' y departamento 'Operaciones' en estado 'activo'"
+      ],
+      "pasos": [
+        "Enviar PUT /api/empleados/EMP-0003 con body {\"departamento\": \"Mercadotecnia\"}"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0003",
+        "departamento_invalido": "Mercadotecnia"
+      },
+      "resultado_esperado": "La respuesta es 422 con detail indicando que el campo departamento debe corregirse"
+    },
+    {
+      "id": "CP-06",
+      "escenario": "Editar con un departamento que no está en la lista permitida",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0003 con puesto 'Soporte' y departamento 'Operaciones' en estado 'activo'"
+      ],
+      "pasos": [
+        "Hacer clic en data-testid='editar-empleado-EMP-0003'",
+        "Escribir 'Mercadotecnia' en data-testid='empleado-departamento'",
+        "Hacer clic en data-testid='empleado-guardar'"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0003",
+        "departamento_invalido": "Mercadotecnia"
+      },
+      "resultado_esperado": "Se muestra data-testid='mensaje-error' indicando que el campo departamento debe corregirse"
+    },
+    {
+      "id": "CP-07",
+      "escenario": "Dar de baja a un empleado activo",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0004 con fecha_ingreso '2022-03-01' en estado 'activo'"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados/EMP-0004/baja con body {\"fecha_baja\": \"2024-05-10\"}",
+        "Obtener GET /api/empleados/EMP-0004",
+        "Obtener GET /api/empleados"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0004",
+        "fecha_baja": "2024-05-10"
+      },
+      "resultado_esperado": "La respuesta del POST es 200; el empleado queda con estado='baja' y fecha_baja='2024-05-10'; sigue apareciendo en el listado de GET /api/empleados"
+    },
+    {
+      "id": "CP-08",
+      "escenario": "Dar de baja a un empleado activo",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0004 con fecha_ingreso '2022-03-01' en estado 'activo'"
+      ],
+      "pasos": [
+        "Hacer clic en data-testid='baja-empleado-EMP-0004'",
+        "Escribir '2024-05-10' en data-testid='empleado-fecha-baja'",
+        "Hacer clic en data-testid='confirmar-baja'"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0004",
+        "fecha_baja": "2024-05-10"
+      },
+      "resultado_esperado": "Se muestra data-testid='mensaje-exito' y data-testid='estado-empleado-EMP-0004' muestra 'Baja'; la fila data-testid='fila-empleado-EMP-0004' sigue visible en data-testid='tabla-empleados'"
+    },
+    {
+      "id": "CP-09",
+      "escenario": "Dar de baja con una fecha de baja anterior a la fecha de ingreso",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0005 con fecha_ingreso '2023-01-15' en estado 'activo'"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados/EMP-0005/baja con body {\"fecha_baja\": \"2022-12-01\"}",
+        "Obtener GET /api/empleados/EMP-0005"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0005",
+        "fecha_ingreso": "2023-01-15",
+        "fecha_baja_invalida": "2022-12-01"
+      },
+      "resultado_esperado": "La respuesta del POST es 422 indicando que el campo fecha_baja debe corregirse; el GET muestra que el empleado conserva estado='activo'"
+    },
+    {
+      "id": "CP-10",
+      "escenario": "Dar de baja con una fecha de baja anterior a la fecha de ingreso",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0005 con fecha_ingreso '2023-01-15' en estado 'activo'"
+      ],
+      "pasos": [
+        "Hacer clic en data-testid='baja-empleado-EMP-0005'",
+        "Escribir '2022-12-01' en data-testid='empleado-fecha-baja'",
+        "Hacer clic en data-testid='confirmar-baja'"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0005",
+        "fecha_ingreso": "2023-01-15",
+        "fecha_baja_invalida": "2022-12-01"
+      },
+      "resultado_esperado": "Se muestra data-testid='mensaje-error' indicando que el campo fecha_baja debe corregirse y data-testid='estado-empleado-EMP-0005' sigue mostrando 'Activo'"
+    },
+    {
+      "id": "CP-11",
+      "escenario": "No se puede editar a un empleado ya dado de baja",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0006 en estado 'baja' con fecha_baja '2024-01-20'"
+      ],
+      "pasos": [
+        "Enviar PUT /api/empleados/EMP-0006 con body {\"puesto\": \"Coordinador\"}",
+        "Obtener GET /api/empleados/EMP-0006"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0006",
+        "puesto_intentado": "Coordinador"
+      },
+      "resultado_esperado": "La respuesta del PUT es 409 con detail 'No se puede editar a un empleado dado de baja'; el GET muestra que el puesto original no cambió"
+    },
+    {
+      "id": "CP-12",
+      "escenario": "No se puede editar a un empleado ya dado de baja",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0006 en estado 'baja' con fecha_baja '2024-01-20'"
+      ],
+      "pasos": [
+        "Hacer clic en data-testid='editar-empleado-EMP-0006'",
+        "Escribir 'Coordinador' en data-testid='empleado-puesto'",
+        "Hacer clic en data-testid='empleado-guardar'"
+      ],
+      "datos": {
+        "numero_empleado": "EMP-0006",
+        "puesto_intentado": "Coordinador"
+      },
+      "resultado_esperado": "Se muestra data-testid='mensaje-error' con el texto 'No se puede editar a un empleado dado de baja' y el puesto mostrado en la fila no cambia"
+    }
+  ]
+}

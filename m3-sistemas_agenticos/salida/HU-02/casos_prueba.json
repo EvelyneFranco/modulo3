@@ -9,7 +9,8 @@
         "Existe el empleado EMP-0001 con nombre \"Laura Gómez\", puesto \"Analista de Nómina\", departamento \"Recursos Humanos\" y estado \"activo\""
       ],
       "pasos": [
-        "Enviar GET a /api/empleados"
+        "Enviar GET a /api/empleados",
+        "Ubicar en el arreglo de respuesta al empleado con numero_empleado \"EMP-0001\""
       ],
       "datos": {
         "numero_empleado": "EMP-0001",
@@ -18,7 +19,7 @@
         "departamento": "Recursos Humanos",
         "estado": "activo"
       },
-      "resultado_esperado": "La respuesta tiene código 200 y el arreglo incluye un empleado con numero_empleado \"EMP-0001\", nombre \"Laura Gómez\", puesto \"Analista de Nómina\", departamento \"Recursos Humanos\" y estado \"activo\""
+      "resultado_esperado": "La respuesta tiene código 200 y el empleado EMP-0001 aparece con nombre \"Laura Gómez\", puesto \"Analista de Nómina\", departamento \"Recursos Humanos\" y estado \"activo\""
     },
     {
       "id": "CP-02",
@@ -28,9 +29,9 @@
         "Existe el empleado EMP-0001 con nombre \"Laura Gómez\", puesto \"Analista de Nómina\", departamento \"Recursos Humanos\" y estado \"activo\""
       ],
       "pasos": [
-        "Abrir la página del directorio de empleados",
+        "Abrir el directorio de empleados",
         "Verificar que la tabla data-testid=tabla-empleados esté visible",
-        "Ubicar la fila data-testid=fila-empleado-{id} correspondiente al empleado EMP-0001",
+        "Ubicar la fila data-testid=fila-empleado-{id} del empleado EMP-0001",
         "Verificar que data-testid=numero-empleado-{id} muestre \"EMP-0001\"",
         "Verificar que la fila muestre el nombre \"Laura Gómez\", el puesto \"Analista de Nómina\" y el departamento \"Recursos Humanos\"",
         "Verificar que data-testid=estado-empleado-{id} muestre \"Activo\""
@@ -42,7 +43,7 @@
         "departamento": "Recursos Humanos",
         "estado": "Activo"
       },
-      "resultado_esperado": "La fila del empleado EMP-0001 se muestra en la tabla con nombre, puesto, departamento y estado correctos"
+      "resultado_esperado": "La fila del empleado EMP-0001 muestra nombre, puesto, departamento y estado correctos en el directorio"
     },
     {
       "id": "CP-03",
@@ -52,13 +53,13 @@
         "Existe el empleado EMP-0002 con nombre \"Carlos Ramírez\" y correo \"carlos.ramirez@empresa.com\""
       ],
       "pasos": [
-        "Enviar GET a /api/empleados?buscar=carlos ramirez"
+        "Enviar GET a /api/empleados?buscar=carlos ramírez"
       ],
       "datos": {
         "numero_empleado": "EMP-0002",
         "nombre": "Carlos Ramírez",
         "correo": "carlos.ramirez@empresa.com",
-        "buscar": "carlos ramirez"
+        "buscar": "carlos ramírez"
       },
       "resultado_esperado": "La respuesta tiene código 200 e incluye al empleado EMP-0002 en los resultados"
     },
@@ -70,15 +71,15 @@
         "Existe el empleado EMP-0002 con nombre \"Carlos Ramírez\" y correo \"carlos.ramirez@empresa.com\""
       ],
       "pasos": [
-        "Abrir la página del directorio de empleados",
-        "Escribir \"carlos ramirez\" en el campo data-testid=buscar-empleados",
-        "Verificar que data-testid=fila-empleado-{id} correspondiente a EMP-0002 esté visible en los resultados"
+        "Abrir el directorio de empleados",
+        "Escribir \"carlos ramírez\" en el campo data-testid=buscar-empleados",
+        "Verificar que data-testid=fila-empleado-{id} del empleado EMP-0002 esté visible en los resultados"
       ],
       "datos": {
         "numero_empleado": "EMP-0002",
         "nombre": "Carlos Ramírez",
         "correo": "carlos.ramirez@empresa.com",
-        "buscar": "carlos ramirez"
+        "buscar": "carlos ramírez"
       },
       "resultado_esperado": "El empleado EMP-0002 aparece en los resultados de la búsqueda"
     },
@@ -108,9 +109,9 @@
         "Existe el empleado EMP-0003 con nombre \"Ana Torres\" y correo \"ana.torres@empresa.com\""
       ],
       "pasos": [
-        "Abrir la página del directorio de empleados",
+        "Abrir el directorio de empleados",
         "Escribir \"ANA.TORRES@EMPRESA.COM\" en el campo data-testid=buscar-empleados",
-        "Verificar que data-testid=fila-empleado-{id} correspondiente a EMP-0003 esté visible en los resultados"
+        "Verificar que data-testid=fila-empleado-{id} del empleado EMP-0003 esté visible en los resultados"
       ],
       "datos": {
         "numero_empleado": "EMP-0003",
@@ -136,7 +137,7 @@
         "numero_empleado_excluido": "EMP-0005",
         "departamento": "Ventas"
       },
-      "resultado_esperado": "La respuesta tiene código 200, incluye a EMP-0004 y no incluye a EMP-0005"
+      "resultado_esperado": "La respuesta tiene código 200, incluye al empleado EMP-0004 y no incluye al empleado EMP-0005"
     },
     {
       "id": "CP-08",
@@ -147,10 +148,10 @@
         "Existe el empleado EMP-0005 con nombre \"Mónica Lira\" y departamento \"Tecnología\""
       ],
       "pasos": [
-        "Abrir la página del directorio de empleados",
+        "Abrir el directorio de empleados",
         "Seleccionar \"Ventas\" en data-testid=filtro-departamento",
-        "Verificar que data-testid=fila-empleado-{id} correspondiente a EMP-0004 esté visible",
-        "Verificar que no exista data-testid=fila-empleado-{id} correspondiente a EMP-0005"
+        "Verificar que data-testid=fila-empleado-{id} del empleado EMP-0004 esté visible",
+        "Verificar que no exista data-testid=fila-empleado-{id} del empleado EMP-0005"
       ],
       "datos": {
         "numero_empleado_incluido": "EMP-0004",
@@ -183,7 +184,7 @@
         "Existe el empleado EMP-0006 con nombre \"Sofía Mendoza\" y correo \"sofia.mendoza@empresa.com\""
       ],
       "pasos": [
-        "Abrir la página del directorio de empleados",
+        "Abrir el directorio de empleados",
         "Escribir \"inexistente\" en el campo data-testid=buscar-empleados",
         "Verificar que data-testid=sin-resultados esté visible con el texto \"No se encontraron resultados\""
       ],
@@ -220,8 +221,8 @@
         "Existe el empleado EMP-0007 con nombre \"Jorge Nieto\", estado \"baja\" y fecha de baja \"2024-03-10\""
       ],
       "pasos": [
-        "Abrir la página del directorio de empleados",
-        "Ubicar la fila data-testid=fila-empleado-{id} correspondiente al empleado EMP-0007",
+        "Abrir el directorio de empleados",
+        "Ubicar la fila data-testid=fila-empleado-{id} del empleado EMP-0007",
         "Verificar que data-testid=estado-empleado-{id} muestre \"Baja\""
       ],
       "datos": {
@@ -256,7 +257,7 @@
         "Existe el empleado EMP-0008 con nombre \"Luis Peña\", departamento \"Finanzas\" y correo \"luis.pena@empresa.com\""
       ],
       "pasos": [
-        "Abrir la página del directorio de empleados",
+        "Abrir el directorio de empleados",
         "Seleccionar \"Operaciones\" en data-testid=filtro-departamento",
         "Escribir \"Luis Peña\" en el campo data-testid=buscar-empleados",
         "Verificar que data-testid=sin-resultados esté visible con el texto \"No se encontraron resultados\""

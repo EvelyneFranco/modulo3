@@ -5,6 +5,8 @@ function DirectorioEmpleados({
   onCambiarBuscar,
   departamento,
   onCambiarDepartamento,
+  onEditar,
+  onBaja,
 }) {
   return (
     <section>
@@ -48,6 +50,7 @@ function DirectorioEmpleados({
               <th>Departamento</th>
               <th>Fecha de ingreso</th>
               <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -61,6 +64,20 @@ function DirectorioEmpleados({
                 <td>{empleado.fecha_ingreso}</td>
                 <td data-testid={`estado-empleado-${empleado.id}`}>
                   {empleado.estado === "activo" ? "Activo" : "Baja"}
+                </td>
+                <td>
+                  <button
+                    data-testid={`editar-empleado-${empleado.id}`}
+                    onClick={() => onEditar(empleado)}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    data-testid={`baja-empleado-${empleado.id}`}
+                    onClick={() => onBaja(empleado)}
+                  >
+                    Dar de baja
+                  </button>
                 </td>
               </tr>
             ))}

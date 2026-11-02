@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 
 import modelos  # noqa: F401  (registra el modelo en Base.metadata antes de create_all)
 from basedatos import Base, engine
+from errores import primer_mensaje
 from rutas_catalogos import router as router_catalogos
 from rutas_empleados import router as router_empleados
 
@@ -15,11 +16,7 @@ app = FastAPI(title="Gestión de empleados")
 
 @app.exception_handler(RequestValidationError)
 async def manejar_error_validacion(request: Request, exc: RequestValidationError) -> JSONResponse:
-    mensaje = exc.errors()[0]["msg"]
-    prefijo = "Value error, "
-    if mensaje.startswith(prefijo):
-        mensaje = mensaje[len(prefijo):]
-    return JSONResponse(status_code=422, content={"detail": mensaje})
+    return JSONResponse(status_code=422, content={"detail": primer_mensaje(exc)})
 
 
 @app.get("/api/salud")

@@ -36,6 +36,8 @@ Cómo trabajas:
 2. Para cada escenario escribe al menos un caso de nivel "api". Si el escenario involucra la pantalla,
    escribe además uno de nivel "e2e" cuyos pasos mencionen los data-testid que se usan.
 3. Usa datos concretos. Para correos usa el dominio corporativo empresa.com.
+   - No agregues requisitos que los criterios no piden (por ejemplo, ignorar acentos en una búsqueda).
+   - En rutas y data-testid usa los identificadores de convenciones_app.md (por ejemplo {{id}}), no otros.
 4. Guarda los casos llamando a la herramienta guardar_casos (no escribas el JSON a mano).
    - "nivel" solo puede ser "api" o "e2e".
    - En "datos" TODOS los valores son texto: "201", no 201; para un campo vacío usa "", nunca null.

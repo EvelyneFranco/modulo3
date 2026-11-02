@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import DirectorioEmpleados from "./components/DirectorioEmpleados";
+import FormularioBaja from "./components/FormularioBaja";
 import FormularioEmpleado from "./components/FormularioEmpleado";
 import { listarEmpleados, obtenerDepartamentos } from "./api/empleados";
 import "./App.css";
@@ -9,6 +10,8 @@ function App() {
   const [departamentos, setDepartamentos] = useState([]);
   const [buscar, setBuscar] = useState("");
   const [departamento, setDepartamento] = useState("");
+  const [empleadoEditando, setEmpleadoEditando] = useState(null);
+  const [empleadoEnBaja, setEmpleadoEnBaja] = useState(null);
 
   useEffect(() => {
     obtenerDepartamentos()
@@ -29,10 +32,48 @@ function App() {
     setEmpleados((anteriores) => [...anteriores, empleado]);
   }
 
+  function reemplazarEnLista(empleadoActualizado) {
+    setEmpleados((anteriores) =>
+      anteriores.map((empleado) =>
+        empleado.id === empleadoActualizado.id ? empleadoActualizado : empleado
+      )
+    );
+  }
+
+  function manejarEmpleadoActualizado(empleadoActualizado) {
+    reemplazarEnLista(empleadoActualizado);
+  }
+
+  function manejarEmpleadoDadoDeBaja(empleadoActualizado) {
+    reemplazarEnLista(empleadoActualizado);
+  }
+
+  function manejarEditar(empleado) {
+    setEmpleadoEnBaja(null);
+    setEmpleadoEditando(empleado);
+  }
+
+  function manejarBaja(empleado) {
+    setEmpleadoEditando(null);
+    setEmpleadoEnBaja(empleado);
+  }
+
   return (
     <main>
       <h1>Gestión de empleados</h1>
-      <FormularioEmpleado onEmpleadoCreado={manejarEmpleadoCreado} />
+      <FormularioEmpleado
+        empleado={empleadoEditando}
+        onEmpleadoCreado={manejarEmpleadoCreado}
+        onEmpleadoActualizado={manejarEmpleadoActualizado}
+        onCancelar={() => setEmpleadoEditando(null)}
+      />
+      {empleadoEnBaja && (
+        <FormularioBaja
+          empleado={empleadoEnBaja}
+          onConfirmar={manejarEmpleadoDadoDeBaja}
+          onCancelar={() => setEmpleadoEnBaja(null)}
+        />
+      )}
       <DirectorioEmpleados
         empleados={empleados}
         departamentos={departamentos}
@@ -40,6 +81,8 @@ function App() {
         onCambiarBuscar={setBuscar}
         departamento={departamento}
         onCambiarDepartamento={setDepartamento}
+        onEditar={manejarEditar}
+        onBaja={manejarBaja}
       />
     </main>
   );

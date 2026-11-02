@@ -46,8 +46,9 @@ def construir(hu: str, plan: str, errores: str = "") -> tuple[str, float]:
     """Edición: Claude Code implementa el plan aprobado en backend/ y frontend/."""
     preparar_app()
     prompt = (f"{requisitos(hu)}\n\n## Plan aprobado\n{plan}\n\nImplementa {hu} siguiendo el plan aprobado. "
-              "Al terminar, comprueba que el backend arranca (`python -m uvicorn main:app` desde backend/) "
-              "y que `npm run build` funciona en frontend/. Responde con un resumen de los archivos que cambiaste.")
+              "Al terminar, comprueba que el backend arranca (`python -m uvicorn main:app --port 8001` desde "
+              "backend/; el 8000 lo usa Docker) y detén ese servidor con kill antes de responder: no dejes "
+              "procesos en segundo plano. Comprueba también que `npm run build` funciona en frontend/. Responde con un resumen de los archivos que cambiaste.")
     if errores:
         prompt += f"\n\n## La verificación anterior falló; corrige esto\n{errores}"
     return ejecutar_claude_code(prompt, agente="desarrollador", cwd=APP, herramientas=EDICION,

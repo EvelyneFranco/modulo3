@@ -52,6 +52,34 @@ class EmpleadoCrear(BaseModel):
         return valor
 
 
+class EmpleadoActualizar(BaseModel):
+    puesto: str | None = None
+    departamento: str | None = None
+
+    @field_validator("puesto")
+    @classmethod
+    def validar_puesto(cls, valor: str | None) -> str | None:
+        if valor is None:
+            return valor
+        valor = valor.strip()
+        if not (2 <= len(valor) <= 60):
+            raise ValueError("El puesto debe tener entre 2 y 60 caracteres")
+        return valor
+
+    @field_validator("departamento")
+    @classmethod
+    def validar_departamento(cls, valor: str | None) -> str | None:
+        if valor is None:
+            return valor
+        if valor not in DEPARTAMENTOS:
+            raise ValueError("El departamento debe ser uno del catálogo válido")
+        return valor
+
+
+class BajaEmpleado(BaseModel):
+    fecha_baja: date
+
+
 class EmpleadoSalida(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

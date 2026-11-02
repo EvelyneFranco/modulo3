@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="26" time="21.412" timestamp="2026-10-31T11:38:30.047685-06:00" hostname="192.168.1.6"><testcase classname="tests.api.test_hu_02" name="test_cp01_directorio_muestra_datos_principales" time="0.042" /><testcase classname="tests.api.test_hu_02" name="test_cp03_buscar_nombre_minusculas_sin_importar_mayusculas" time="0.014"><failure message="AssertionError: assert 'EMP-0097' in ['EMP-0095']">tests/api/test_hu_02.py:60: in test_cp03_buscar_nombre_minusculas_sin_importar_mayusculas
+    assert creado["numero_empleado"] in numeros
+E   AssertionError: assert 'EMP-0097' in ['EMP-0095']</failure></testcase><testcase classname="tests.api.test_hu_02" name="test_cp05_buscar_correo_mayusculas_sin_importar_mayusculas" time="0.013" /><testcase classname="tests.api.test_hu_02" name="test_cp07_filtrar_por_departamento" time="0.018" /><testcase classname="tests.api.test_hu_02" name="test_cp09_buscar_sin_coincidencias_devuelve_arreglo_vacio" time="0.012" /><testcase classname="tests.api.test_hu_02" name="test_cp11_empleado_dado_de_baja_sigue_en_el_directorio" time="0.015"><failure message="AssertionError: assert 'activo' == 'baja'&#10;  &#10;  - baja&#10;  + activo">tests/api/test_hu_02.py:122: in test_cp11_empleado_dado_de_baja_sigue_en_el_directorio
+    assert encontrado["estado"] == "baja"
+E   AssertionError: assert 'activo' == 'baja'
+E     
+E     - baja
+E     + activo</failure></testcase><testcase classname="tests.api.test_hu_02" name="test_cp13_combinar_busqueda_y_departamento_sin_coincidencias" time="0.012" /><testcase classname="tests.api.test_hu_03" name="test_cp01_editar_puesto_y_departamento_de_empleado_activo" time="0.019" /><testcase classname="tests.api.test_hu_03" name="test_cp03_no_se_puede_editar_numero_empleado_ni_correo" time="0.016" /><testcase classname="tests.api.test_hu_03" name="test_cp05_editar_con_departamento_fuera_del_catalogo" time="0.014" /><testcase classname="tests.api.test_hu_03" name="test_cp07_dar_de_baja_a_un_empleado_activo" time="0.023" /><testcase classname="tests.api.test_hu_03" name="test_cp09_dar_de_baja_con_fecha_anterior_a_la_fecha_de_ingreso" time="0.015" /><testcase classname="tests.api.test_hu_03" name="test_cp11_no_se_puede_editar_a_un_empleado_ya_dado_de_baja" time="0.023" /><testcase classname="tests.e2e.test_hu_02_e2e" name="test_cp02_fila_muestra_datos_principales[chromium]" time="1.306" /><testcase classname="tests.e2e.test_hu_02_e2e" name="test_cp04_buscar_nombre_minusculas_sin_importar_mayusculas[chromium]" time="5.104"><failure message="AssertionError: Locator expected to be visible&#10;Actual value: None&#10;Error: element(s) not found &#10;Call log:&#10;  - Expect &quot;to_be_visible&quot; get_by_test_id(&quot;fila-empleado-111&quot;) with timeout 5000ms&#10;  - waiting for get_by_test_id(&quot;fila-empleado-111&quot;)&#10;&#10;Aria snapshot:&#10;- main:&#10;  - heading &quot;Gestión de empleados&quot; [level=1]&#10;  - heading &quot;Registrar empleado&quot; [level=2]&#10;  - text: Nombre&#10;  - textbox &quot;Nombre&quot;&#10;  - text: Correo&#10;  - textbox &quot;Correo&quot;&#10;  - text: Puesto&#10;  - textbox &quot;Puesto&quot;&#10;  - text: Departamento&#10;  - combobox &quot;Departamento&quot;:&#10;    - option &quot;Selecciona un departamento&quot; [selected]&#10;    - option &quot;Tecnología&quot;&#10;    - option &quot;Ventas&quot;&#10;    - option &quot;Finanzas&quot;&#10;    - option &quot;Recursos Humanos&quot;&#10;    - option &quot;Operaciones&quot;&#10;  - text: Fecha de ingreso&#10;  - textbox &quot;Fecha de ingreso&quot;&#10;  - button &quot;Guardar&quot;&#10;  - heading &quot;Directorio de empleados&quot; [level=2]&#10;  - text: Buscar&#10;  - textbox &quot;Buscar&quot;:&#10;    - /placeholder: Nombre o correo&#10;    - text: carlos ramirez&#10;  - text: Departamento&#10;  - combobox &quot;Departamento&quot;:&#10;    - option &quot;Todos&quot; [selected]&#10;    - option &quot;Tecnología&quot;&#10;    - option &quot;Ventas&quot;&#10;    - option &quot;Finanzas&quot;&#10;    - option &quot;Recursos Humanos&quot;&#10;    - option &quot;Operaciones&quot;&#10;  - table:&#10;    - rowgroup:&#10;      - row &quot;Número Nombre Correo Puesto Departamento Fecha de ingreso Estado Acciones&quot;:&#10;        - columnheader &quot;Número&quot;&#10;        - columnheader &quot;Nombre&quot;&#10;        - columnheader &quot;Correo&quot;&#10;        - columnheader &quot;Puesto&quot;&#10;        - columnheader &quot;Departamento&quot;&#10;        - columnheader &quot;Fecha de ingreso&quot;&#10;        - columnheader &quot;Estado&quot;&#10;        - columnheader &quot;Acciones&quot;&#10;    - rowgroup:&#10;      - row &quot;EMP-0095 Carlos Ramirez Diag carlos.diag.debug2@empresa.com Analista Ventas 2023-01-15 Activo Editar Dar de baja&quot;:&#10;        - cell &quot;EMP-0095&quot;&#10;        - cell &quot;Carlos Ramirez Diag&quot;&#10;        - cell &quot;carlos.diag.debug2@empresa.com&quot;&#10;        - cell &quot;Analista&quot;&#10;        - cell &quot;Ventas&quot;&#10;        - cell &quot;2023-01-15&quot;&#10;        - cell &quot;Activo&quot;&#10;        - cell &quot;Editar Dar de baja&quot;:&#10;          - button &quot;Editar&quot;&#10;          - button &quot;Dar de baja&quot;">tests/e2e/test_hu_02_e2e.py:62: in test_cp04_buscar_nombre_minusculas_sin_importar_mayusculas
+    expect(page.get_by_test_id(f"fila-empleado-{creado['id']}")).to_be_visible()
+E   AssertionError: Locator expected to be visible
+E   Actual value: None
+E   Error: element(s) not found 
+E   Call log:
+E     - Expect "to_be_visible" get_by_test_id("fila-empleado-111") with timeout 5000ms
+E     - waiting for get_by_test_id("fila-empleado-111")
+E   
+E   Aria snapshot:
+E   - main:
+E     - heading "Gestión de empleados" [level=1]
+E     - heading "Registrar empleado" [level=2]
+E     - text: Nombre
+E     - textbox "Nombre"
+E     - text: Correo
+E     - textbox "Correo"
+E     - text: Puesto
+E     - textbox "Puesto"
+E     - text: Departamento
+E     - combobox "Departamento":
+E       - option "Selecciona un departamento" [selected]
+E       - option "Tecnología"
+E       - option "Ventas"
+E       - option "Finanzas"
+E       - option "Recursos Humanos"
+E       - option "Operaciones"
+E     - text: Fecha de ingreso
+E     - textbox "Fecha de ingreso"
+E     - button "Guardar"
+E     - heading "Directorio de empleados" [level=2]
+E     - text: Buscar
+E     - textbox "Buscar":
+E       - /placeholder: Nombre o correo
+E       - text: carlos ramirez
+E     - text: Departamento
+E     - combobox "Departamento":
+E       - option "Todos" [selected]
+E       - option "Tecnología"
+E       - option "Ventas"
+E       - option "Finanzas"
+E       - option "Recursos Humanos"
+E       - option "Operaciones"
+E     - table:
+E       - rowgroup:
+E         - row "Número Nombre Correo Puesto Departamento Fecha de ingreso Estado Acciones":
+E           - columnheader "Número"
+E           - columnheader "Nombre"
+E           - columnheader "Correo"
+E           - columnheader "Puesto"
+E           - columnheader "Departamento"
+E           - columnheader "Fecha de ingreso"
+E           - columnheader "Estado"
+E           - columnheader "Acciones"
+E       - rowgroup:
+E         - row "EMP-0095 Carlos Ramirez Diag carlos.diag.debug2@empresa.com Analista Ventas 2023-01-15 Activo Editar Dar de baja":
+E           - cell "EMP-0095"
+E           - cell "Carlos Ramirez Diag"
+E           - cell "carlos.diag.debug2@empresa.com"
+E           - cell "Analista"
+E           - cell "Ventas"
+E           - cell "2023-01-15"
+E           - cell "Activo"
+E           - cell "Editar Dar de baja":
+E             - button "Editar"
+E             - button "Dar de baja"</failure></testcase><testcase classname="tests.e2e.test_hu_02_e2e" name="test_cp06_buscar_correo_mayusculas_sin_importar_mayusculas[chromium]" time="0.878" /><testcase classname="tests.e2e.test_hu_02_e2e" name="test_cp08_filtrar_por_departamento[chromium]" time="0.883" /><testcase classname="tests.e2e.test_hu_02_e2e" name="test_cp10_buscar_sin_coincidencias_muestra_sin_resultados[chromium]" time="0.098" /><testcase classname="tests.e2e.test_hu_02_e2e" name="test_cp12_empleado_dado_de_baja_sigue_en_el_directorio[chromium]" time="0.867" /><testcase classname="tests.e2e.test_hu_02_e2e" name="test_cp14_combinar_busqueda_y_departamento_sin_coincidencias[chromium]" time="0.106" /><testcase classname="tests.e2e.test_hu_03_e2e" name="test_cp02_editar_puesto_y_departamento_de_empleado_activo[chromium]" time="0.995" /><testcase classname="tests.e2e.test_hu_03_e2e" name="test_cp04_no_se_puede_editar_el_correo[chromium]" time="3.891"><failure message="playwright._impl._errors.TimeoutError: Locator.fill: Timeout 3000ms exceeded.&#10;Call log:&#10;  - waiting for get_by_test_id(&quot;empleado-correo&quot;)&#10;    - locator resolved to &lt;input value=&quot;&quot; disabled id=&quot;correo&quot; required=&quot;&quot; type=&quot;email&quot; name=&quot;correo&quot; data-testid=&quot;empleado-correo&quot;/&gt;&#10;    - fill(&quot;ana.nueva.ae401d57@empresa.com&quot;)&#10;  - attempting fill action&#10;    2 × waiting for element to be visible, enabled and editable&#10;      - element is not enabled&#10;    - retrying fill action&#10;    - waiting 20ms&#10;    2 × waiting for element to be visible, enabled and editable&#10;      - element is not enabled&#10;    - retrying fill action&#10;      - waiting 100ms&#10;    6 × waiting for element to be visible, enabled and editable&#10;      - element is not enabled&#10;    - retrying fill action&#10;      - waiting 500ms">tests/e2e/test_hu_03_e2e.py:57: in test_cp04_no_se_puede_editar_el_correo
+    page.get_by_test_id("empleado-correo").fill(_correo_unico("ana.nueva"), timeout=3000)
+../.venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:11640: in fill
+    self._sync(
+../.venv/lib/python3.12/site-packages/playwright/_impl/_locator.py:228: in fill
+    return await self._frame.fill(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../.venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:641: in fill
+    await self._fill(**locals_to_params(locals()))
+../.venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:653: in _fill
+    await self._channel.send("fill", self._timeout, locals_to_params(locals()))
+../.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:78: in send
+    return await self._connection.wrap_api_call(
+../.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:636: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.TimeoutError: Locator.fill: Timeout 3000ms exceeded.
+E   Call log:
+E     - waiting for get_by_test_id("empleado-correo")
+E       - locator resolved to &lt;input value="" disabled id="correo" required="" type="email" name="correo" data-testid="empleado-correo"/&gt;
+E       - fill("ana.nueva.ae401d57@empresa.com")
+E     - attempting fill action
+E       2 × waiting for element to be visible, enabled and editable
+E         - element is not enabled
+E       - retrying fill action
+E       - waiting 20ms
+E       2 × waiting for element to be visible, enabled and editable
+E         - element is not enabled
+E       - retrying fill action
+E         - waiting 100ms
+E       6 × waiting for element to be visible, enabled and editable
+E         - element is not enabled
+E       - retrying fill action
+E         - waiting 500ms</failure></testcase><testcase classname="tests.e2e.test_hu_03_e2e" name="test_cp06_editar_con_departamento_fuera_del_catalogo[chromium]" time="3.891"><failure message="playwright._impl._errors.TimeoutError: Locator.select_option: Timeout 3000ms exceeded.&#10;Call log:&#10;  - waiting for get_by_test_id(&quot;empleado-departamento&quot;)&#10;    - locator resolved to &lt;select required=&quot;&quot; id=&quot;departamento&quot; name=&quot;departamento&quot; data-testid=&quot;empleado-departamento&quot;&gt;…&lt;/select&gt;&#10;  - attempting select option action&#10;    2 × waiting for element to be visible and enabled&#10;      - did not find some options&#10;    - retrying select option action&#10;    - waiting 20ms&#10;    2 × waiting for element to be visible and enabled&#10;      - did not find some options&#10;    - retrying select option action&#10;      - waiting 100ms&#10;    6 × waiting for element to be visible and enabled&#10;      - did not find some options&#10;    - retrying select option action&#10;      - waiting 500ms">tests/e2e/test_hu_03_e2e.py:74: in test_cp06_editar_con_departamento_fuera_del_catalogo
+    page.get_by_test_id("empleado-departamento").select_option("Mercadotecnia", timeout=3000)
+../.venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:13173: in select_option
+    self._sync(
+../.venv/lib/python3.12/site-packages/playwright/_impl/_locator.py:652: in select_option
+    return await self._frame.select_option(
+../.venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:819: in select_option
+    return await self._channel.send("selectOption", self._timeout, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:78: in send
+    return await self._connection.wrap_api_call(
+../.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:636: in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E   playwright._impl._errors.TimeoutError: Locator.select_option: Timeout 3000ms exceeded.
+E   Call log:
+E     - waiting for get_by_test_id("empleado-departamento")
+E       - locator resolved to &lt;select required="" id="departamento" name="departamento" data-testid="empleado-departamento"&gt;…&lt;/select&gt;
+E     - attempting select option action
+E       2 × waiting for element to be visible and enabled
+E         - did not find some options
+E       - retrying select option action
+E       - waiting 20ms
+E       2 × waiting for element to be visible and enabled
+E         - did not find some options
+E       - retrying select option action
+E         - waiting 100ms
+E       6 × waiting for element to be visible and enabled
+E         - did not find some options
+E       - retrying select option action
+E         - waiting 500ms</failure></testcase><testcase classname="tests.e2e.test_hu_03_e2e" name="test_cp08_dar_de_baja_a_un_empleado_activo[chromium]" time="0.979" /><testcase classname="tests.e2e.test_hu_03_e2e" name="test_cp10_dar_de_baja_con_fecha_anterior_a_la_fecha_de_ingreso[chromium]" time="0.979" /><testcase classname="tests.e2e.test_hu_03_e2e" name="test_cp12_no_se_puede_editar_a_un_empleado_ya_dado_de_baja[chromium]" time="0.985" /></testsuite></testsuites>

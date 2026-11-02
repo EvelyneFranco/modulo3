@@ -54,7 +54,7 @@ def test_cp03_buscar_nombre_minusculas_sin_importar_mayusculas(url_api):
         departamento="Ventas",
     )
 
-    respuesta = httpx.get(f"{url_api}/api/empleados", params={"buscar": "carlos ramirez"})
+    respuesta = httpx.get(f"{url_api}/api/empleados", params={"buscar": "carlos ramírez"})
     assert respuesta.status_code == 200
     numeros = [e["numero_empleado"] for e in respuesta.json()]
     assert creado["numero_empleado"] in numeros
@@ -101,17 +101,16 @@ def test_cp09_buscar_sin_coincidencias_devuelve_arreglo_vacio(url_api):
         correo=_correo_unico("sofia.mendoza"),
     )
 
-    texto_sin_coincidencias = f"zzz-inexistente-{uuid.uuid4().hex[:8]}"
-    respuesta = httpx.get(f"{url_api}/api/empleados", params={"buscar": texto_sin_coincidencias})
+    respuesta = httpx.get(f"{url_api}/api/empleados", params={"buscar": "inexistente"})
     assert respuesta.status_code == 200
     assert respuesta.json() == []
 
 
 def test_cp11_empleado_dado_de_baja_sigue_en_el_directorio(url_api, marcar_baja):
     """CP-11: un empleado dado de baja sigue apareciendo en el directorio."""
-    correo = _correo_unico("jorge.nieto")
-    creado = _crear_empleado(url_api, nombre="Jorge Nieto", correo=correo)
-    marcar_baja(correo, "2024-03-10")
+    creado = _crear_empleado(url_api, nombre="Jorge Nieto", fecha_ingreso="2023-01-01")
+    baja = marcar_baja(creado["id"], "2024-03-10")
+    assert baja.status_code == 200
 
     respuesta = httpx.get(f"{url_api}/api/empleados")
     assert respuesta.status_code == 200

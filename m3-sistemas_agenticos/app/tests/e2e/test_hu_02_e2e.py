@@ -57,7 +57,7 @@ def test_cp04_buscar_nombre_minusculas_sin_importar_mayusculas(page, url_api, ur
     )
 
     page.goto(url_web)
-    page.get_by_test_id("buscar-empleados").fill("carlos ramirez")
+    page.get_by_test_id("buscar-empleados").fill("carlos ramírez")
 
     expect(page.get_by_test_id(f"fila-empleado-{creado['id']}")).to_be_visible()
 
@@ -104,8 +104,7 @@ def test_cp10_buscar_sin_coincidencias_muestra_sin_resultados(page, url_api, url
     )
 
     page.goto(url_web)
-    texto_sin_coincidencias = f"zzz-inexistente-{uuid.uuid4().hex[:8]}"
-    page.get_by_test_id("buscar-empleados").fill(texto_sin_coincidencias)
+    page.get_by_test_id("buscar-empleados").fill("inexistente")
 
     sin_resultados = page.get_by_test_id("sin-resultados")
     expect(sin_resultados).to_be_visible()
@@ -114,9 +113,9 @@ def test_cp10_buscar_sin_coincidencias_muestra_sin_resultados(page, url_api, url
 
 def test_cp12_empleado_dado_de_baja_sigue_en_el_directorio(page, url_api, url_web, marcar_baja):
     """CP-12: un empleado dado de baja sigue apareciendo en el directorio."""
-    correo = _correo_unico("jorge.nieto")
-    creado = _crear_empleado(url_api, nombre="Jorge Nieto", correo=correo)
-    marcar_baja(correo, "2024-03-10")
+    creado = _crear_empleado(url_api, nombre="Jorge Nieto", fecha_ingreso="2023-01-01")
+    baja = marcar_baja(creado["id"], "2024-03-10")
+    assert baja.status_code == 200
 
     page.goto(url_web)
 
