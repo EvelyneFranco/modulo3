@@ -10,7 +10,9 @@ from typing import Literal
 
 from langchain_anthropic import ChatAnthropic
 from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.graph import END, START, StateGraph
+from langgraph.types import Command
 from pydantic import BaseModel
 
 from agentes import desarrollador
@@ -116,7 +118,7 @@ def reporte(s: Estado) -> Estado:
     return {}
 
 
-def construir_grafo():
+def construir_grafo(checkpointer=None):
     g = StateGraph(Estado)
     for nombre, fn in [("filtrar_historia", filtrar_historia), ("analizar", s2.analizar),
                        ("pedir_aclaracion", s2.pedir_aclaracion), ("disenar_casos", s2.disenar),
@@ -143,11 +145,37 @@ def construir_grafo():
     for correccion in ("corregir_codigo", "corregir_pruebas", "corregir_despliegue"):
         g.add_edge(correccion, "pruebas_e2e")                          # el ciclo: corregir y volver a probar
     g.add_edge("fin", END)
-    app = g.compile(checkpointer=InMemorySaver())
-    #DIBUJA EL GRAFO ! 
+    app = g.compile(checkpointer=checkpointer or InMemorySaver())
+    #DIBUJA EL GRAFO !
     dibuja_grafo(app,"flujo_s4")
     return app
-    
+
+
+def ejecutar(app, historia: str) -> dict:
+    """Retoma la historia si quedó a medias en el checkpoint; si no, la empieza desde cero."""
+    hilo = Path(historia).stem
+    cfg = {"configurable": {"thread_id": hilo}}
+    pendiente = app.get_state(cfg).next
+    if not (pendiente and input(f"{hilo} quedó a medias en «{pendiente[0]}». ¿Reanudar? (si/no): ")
+            .strip().lower() == "si"):
+        app.checkpointer.delete_thread(hilo)       # sin restos de la ejecución anterior
+        return s2.ejecutar(app, historia)
+    out = app.invoke(None, cfg)                     # None = seguir desde el último checkpoint
+    while "__interrupt__" in out:
+        pausa = out["__interrupt__"][0].value
+        for clave in ("preguntas", "plan", "diagnostico"):
+            if clave in pausa:
+                print(f"\n--- {clave.upper()} ---\n{pausa[clave]}")
+        out = app.invoke(Command(resume=input(pausa["pregunta"] + ": ")), cfg)
+    return out
+
 
 if __name__ == "__main__":
-    s2.ejecutar(construir_grafo(), sys.argv[1])
+    if os.environ.get("POSTGRES_URI"):
+        # Checkpoint persistente: si se cierra la terminal, el flujo se retoma desde el último paso
+        with PostgresSaver.from_conn_string(os.environ["POSTGRES_URI"]) as checkpointer:
+            checkpointer.setup()
+            ejecutar(construir_grafo(checkpointer), sys.argv[1])
+    else:
+        print("Sin POSTGRES_URI: el checkpoint vive en memoria y se pierde al cerrar la terminal.")
+        ejecutar(construir_grafo(), sys.argv[1])

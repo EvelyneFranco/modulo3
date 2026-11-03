@@ -12,7 +12,8 @@ SISTEMA = """Eres analista de producto en un equipo de software. Conviertes hist
 en criterios de aceptación escritos en Gherkin, en español.
 
 Cómo trabajas:
-1. Lee la historia y el archivo contexto/reglas_negocio.md.
+1. Lee la historia, contexto/reglas_negocio.md y contexto/convenciones_app.md.
+   Cuando las convenciones fijan un mensaje de error para esta historia, cópialo textual en el escenario.
 2. Escribe {destino}. La primera línea es `# language: es` y usas las palabras clave
    Característica, Escenario, Dado, Cuando, Entonces, Y.
 3. Incluye el camino feliz y un escenario de error por cada regla de negocio que aplique a ESTA historia.
@@ -32,7 +33,17 @@ def preguntas_abiertas(gherkin: str) -> list[str]:
     return [l.lstrip("# -").strip() for l in bloque.splitlines() if l.strip().lstrip("#").strip()]
 
 
-def validar_gherkin(texto: str) -> list[str]:
+def mensajes_obligatorios(hu: str) -> list[str]:
+    """Mensajes de error que convenciones_app.md fija para esta historia, en su sección «# ... (HU-xx)»."""
+    texto = (RAIZ / "contexto" / "convenciones_app.md").read_text(encoding="utf-8")
+    seccion = re.search(rf"^# .*\({hu}\)\s*$(.*?)(?=^# |\Z)", texto, flags=re.MULTILINE | re.DOTALL)
+    if not seccion:
+        return []
+    # Filas de tabla con la forma: | caso | código | `mensaje` |
+    return re.findall(r"^\|.*\|\s*\d{3}\s*\|\s*`([^`]+)`\s*\|\s*$", seccion.group(1), flags=re.MULTILINE)
+
+
+def validar_gherkin(texto: str, mensajes: list[str] | None = None) -> list[str]:
     """Evaluador determinista: devuelve los problemas encontrados; vacío = válido."""
     problemas = []
     if not texto.lstrip().startswith("# language: es"):
@@ -46,6 +57,11 @@ def validar_gherkin(texto: str) -> list[str]:
         for clave in ("Dado", "Cuando", "Entonces"):
             if not re.search(rf"^\s*{clave}\b", bloque, flags=re.MULTILINE):
                 problemas.append(f"El escenario {i} no tiene '{clave}'.")
+    for mensaje in mensajes or []:
+        # Una N suelta es un número variable: «quedan N días hábiles» acepta «quedan 4 días hábiles»
+        patron = re.sub(r"\bN\b", r"\\d+", re.escape(mensaje))
+        if not re.search(patron, texto):
+            problemas.append(f"Falta el mensaje exacto de las convenciones: «{mensaje}».")
     return problemas
 
 
@@ -54,10 +70,11 @@ def generar_criterios(historia: Path, max_intentos: int = 2) -> Path:
     destino = carpeta / "criterios.feature"
     herramientas = herramientas_archivos(lectura=[RAIZ / "historias", RAIZ / "contexto"], escritura=carpeta)
     tarea = f"Historia de usuario: {rel(historia)}"
+    mensajes = mensajes_obligatorios(hu_de(historia))
     for intento in range(1, max_intentos + 1):
         print(f"Analista · intento {intento}")
         ejecutar_agente(SISTEMA.format(destino=rel(destino)), herramientas, tarea, nombre="analista")
-        problemas = validar_gherkin(destino.read_text(encoding="utf-8")) if destino.exists() \
+        problemas = validar_gherkin(destino.read_text(encoding="utf-8"), mensajes) if destino.exists() \
             else [f"No se escribió {rel(destino)}."]
         if not problemas:
             return destino

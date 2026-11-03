@@ -38,6 +38,9 @@ Cómo trabajas:
 3. Usa datos concretos. Para correos usa el dominio corporativo empresa.com.
    - No agregues requisitos que los criterios no piden (por ejemplo, ignorar acentos en una búsqueda).
    - En rutas y data-testid usa los identificadores de convenciones_app.md (por ejemplo {{id}}), no otros.
+   - En reglas con fechas o límites, prueba el valor justo en el borde y el primero que queda fuera
+     (por ejemplo, exactamente un año de antigüedad contra un día menos; usar justo los días que quedan
+     contra uno más).
 4. Guarda los casos llamando a la herramienta guardar_casos (no escribas el JSON a mano).
    - "nivel" solo puede ser "api" o "e2e".
    - En "datos" TODOS los valores son texto: "201", no 201; para un campo vacío usa "", nunca null.
