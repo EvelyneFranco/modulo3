@@ -8,6 +8,7 @@ from basedatos import Base, engine
 from errores import primer_mensaje
 from rutas_catalogos import router as router_catalogos
 from rutas_empleados import router as router_empleados
+from rutas_vacaciones import router as router_vacaciones
 
 Base.metadata.create_all(bind=engine)
 
@@ -25,4 +26,5 @@ def salud() -> dict[str, str]:
 
 
 app.include_router(router_empleados, prefix="/api")
+app.include_router(router_vacaciones, prefix="/api")
 app.include_router(router_catalogos, prefix="/api")

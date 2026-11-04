@@ -62,3 +62,26 @@ export async function darDeBaja(id, fechaBaja) {
   }
   return cuerpo;
 }
+
+export async function solicitarVacaciones(empleadoId, datos) {
+  const respuesta = await fetch(`${URL_BASE}/empleados/${empleadoId}/vacaciones`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datos),
+  });
+  const cuerpo = await respuesta.json();
+  if (!respuesta.ok) {
+    throw new Error(cuerpo.detail || "No se pudo registrar la solicitud de vacaciones");
+  }
+  return cuerpo;
+}
+
+export async function obtenerSaldoVacaciones(empleadoId, anio) {
+  const parametros = anio ? `?anio=${anio}` : "";
+  const respuesta = await fetch(`${URL_BASE}/empleados/${empleadoId}/vacaciones${parametros}`);
+  const cuerpo = await respuesta.json();
+  if (!respuesta.ok) {
+    throw new Error(cuerpo.detail || "No se pudo consultar el saldo de vacaciones");
+  }
+  return cuerpo;
+}

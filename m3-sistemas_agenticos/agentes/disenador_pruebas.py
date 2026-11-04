@@ -41,6 +41,8 @@ Cómo trabajas:
    - En reglas con fechas o límites, prueba el valor justo en el borde y el primero que queda fuera
      (por ejemplo, exactamente un año de antigüedad contra un día menos; usar justo los días que quedan
      contra uno más).
+   - Sé breve: pasos cortos y sin repetir precondiciones. Escribe casos "e2e" solo cuando la pantalla
+     puede producir el resultado (no para un empleado inexistente o dado de baja: no tiene botón).
 4. Guarda los casos llamando a la herramienta guardar_casos (no escribas el JSON a mano).
    - "nivel" solo puede ser "api" o "e2e".
    - En "datos" TODOS los valores son texto: "201", no 201; para un campo vacío usa "", nunca null.

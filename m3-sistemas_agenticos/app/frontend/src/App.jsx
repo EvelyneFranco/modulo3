@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import DirectorioEmpleados from "./components/DirectorioEmpleados";
 import FormularioBaja from "./components/FormularioBaja";
 import FormularioEmpleado from "./components/FormularioEmpleado";
+import FormularioVacaciones from "./components/FormularioVacaciones";
 import { listarEmpleados, obtenerDepartamentos } from "./api/empleados";
 import "./App.css";
 
@@ -12,6 +13,7 @@ function App() {
   const [departamento, setDepartamento] = useState("");
   const [empleadoEditando, setEmpleadoEditando] = useState(null);
   const [empleadoEnBaja, setEmpleadoEnBaja] = useState(null);
+  const [empleadoEnVacaciones, setEmpleadoEnVacaciones] = useState(null);
 
   useEffect(() => {
     obtenerDepartamentos()
@@ -58,6 +60,12 @@ function App() {
     setEmpleadoEnBaja(empleado);
   }
 
+  function manejarAbrirVacaciones(empleado) {
+    setEmpleadoEditando(null);
+    setEmpleadoEnBaja(null);
+    setEmpleadoEnVacaciones(empleado);
+  }
+
   return (
     <main>
       <h1>Gestión de empleados</h1>
@@ -74,6 +82,12 @@ function App() {
           onCancelar={() => setEmpleadoEnBaja(null)}
         />
       )}
+      {empleadoEnVacaciones && (
+        <FormularioVacaciones
+          empleado={empleadoEnVacaciones}
+          onCancelar={() => setEmpleadoEnVacaciones(null)}
+        />
+      )}
       <DirectorioEmpleados
         empleados={empleados}
         departamentos={departamentos}
@@ -83,6 +97,7 @@ function App() {
         onCambiarDepartamento={setDepartamento}
         onEditar={manejarEditar}
         onBaja={manejarBaja}
+        onAbrirVacaciones={manejarAbrirVacaciones}
       />
     </main>
   );

@@ -7,6 +7,7 @@ function DirectorioEmpleados({
   onCambiarDepartamento,
   onEditar,
   onBaja,
+  onAbrirVacaciones,
 }) {
   return (
     <section>
@@ -78,6 +79,14 @@ function DirectorioEmpleados({
                   >
                     Dar de baja
                   </button>
+                  {empleado.estado === "activo" && (
+                    <button
+                      data-testid={`vacaciones-abrir-${empleado.id}`}
+                      onClick={() => onAbrirVacaciones(empleado)}
+                    >
+                      Solicitar vacaciones
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
