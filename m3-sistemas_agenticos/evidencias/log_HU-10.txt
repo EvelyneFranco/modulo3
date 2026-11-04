@@ -1,0 +1,141 @@
+# Salida de terminal de la ejecución de HU-10 (2026-11-03). Se omitieron el aviso repetido
+# «claude.ai connectors are disabled…» y las líneas internas de LangGraph del traceback.
+# Ejecución 1: se detuvo en el diseñador por max_tokens.
+# Ejecución 2: se reanudó desde el checkpoint de Postgres y terminó en LISTA.
+
+=============================== EJECUCIÓN 1 ===============================
+(m3-sistemas_agenticos) evelynefranco@192 m3-sistemas_agenticos % python -m flujos.flujo_s4 historias/HU-10-solicitar-vacaciones.md
+
+Analista · intento 1
+  [analista] stop_reason=tool_use · bloques=['thinking', 'tool_use', 'tool_use', 'tool_use']
+  [analista · paso 0] leer_archivo(ruta)
+  [analista · paso 0] leer_archivo(ruta)
+  [analista · paso 0] leer_archivo(ruta)
+  [analista] stop_reason=tool_use · bloques=['thinking', 'tool_use']
+  [analista · paso 1] escribir_archivo(ruta, contenido)
+  [analista] stop_reason=end_turn · bloques=['text']
+  [analista] respondió sin herramientas:
+10 escenarios.
+
+--- PREGUNTAS ---
+['No se especifica si dos solicitudes pueden tener periodos superpuestos para el mismo empleado; se asume que no se valida en esta historia.', 'No se especifica el comportamiento si fecha_inicio o fecha_fin faltan o tienen formato inválido más allá del 422 automático de FastAPI, por lo que no se agrega un escenario propio para ese caso.']
+Hay preguntas abiertas. ¿Continuar de todos modos? (si/no): si
+Diseñador de pruebas · intento 1
+  [disenador] stop_reason=tool_use · bloques=['thinking', 'tool_use', 'tool_use']
+  [disenador · paso 0] leer_archivo(ruta)
+  [disenador · paso 0] leer_archivo(ruta)
+  [disenador] stop_reason=tool_use · bloques=['thinking', 'tool_use']
+  [disenador · paso 1] listar_archivos(carpeta)
+  [disenador] stop_reason=tool_use · bloques=['thinking', 'tool_use']
+  [disenador · paso 2] leer_archivo(ruta)
+  [disenador] stop_reason=max_tokens · bloques=['thinking', 'tool_use']
+Traceback (most recent call last):
+  ...
+  File ".../flujos/flujo_s2.py", line 63, in disenar
+    ruta = disenar_casos(Path(s["criterios"]))                         # Agente 2
+  File ".../agentes/disenador_pruebas.py", line 97, in disenar_casos
+    ejecutar_agente(sistema, herramientas, tarea, nombre="disenador")
+  File ".../agentes/base.py", line 109, in ejecutar_agente
+    raise RuntimeError(f"{nombre}: la respuesta se cortó por max_tokens; súbelo o pide una salida más corta")
+RuntimeError: disenador: la respuesta se cortó por max_tokens; súbelo o pide una salida más corta
+During task with name 'disenar_casos' and id '9fd45257-0d02-01fb-4788-50dee68c6445'
+
+# Corrección en el agente (no en su resultado): agentes/disenador_pruebas.py pide pasos breves
+# y casos e2e solo cuando la pantalla puede producir el resultado.
+
+=============================== EJECUCIÓN 2 ===============================
+(m3-sistemas_agenticos) evelynefranco@192 m3-sistemas_agenticos % python -m flujos.flujo_s4 historias/HU-10-solicitar-vacaciones.md
+HU-10-solicitar-vacaciones quedó a medias en «disenar_casos». ¿Reanudar? (si/no): si
+Diseñador de pruebas · intento 1
+  [disenador] stop_reason=tool_use · bloques=['tool_use', 'tool_use']
+  [disenador · paso 0] leer_archivo(ruta)
+  [disenador · paso 0] leer_archivo(ruta)
+  [disenador] stop_reason=tool_use · bloques=['thinking', 'tool_use']
+  [disenador · paso 1] listar_archivos(carpeta)
+  [disenador] stop_reason=tool_use · bloques=['thinking', 'tool_use']
+  [disenador · paso 2] leer_archivo(ruta)
+  [disenador] stop_reason=tool_use · bloques=['thinking', 'tool_use']
+  [disenador · paso 3] guardar_casos(historia, casos)
+  [disenador] stop_reason=end_turn · bloques=['text']
+  [disenador] respondió sin herramientas:
+He diseñado 21 casos de prueba.
+  [desarrollador-plan] trabajando en app/ con Claude Code...
+  [desarrollador-plan] terminó en 13 turnos · 0.21 USD
+
+--- PLAN ---
+## Plan HU-10 · Vacaciones
+
+**Backend**
+
+1. `modelos.py`: nueva clase `Vacacion` (tabla `vacaciones`): `id`, `empleado_id` (FK a `empleados.id`), `fecha_inicio`, `fecha_fin` (`Date`), `dias_habiles` (`Integer`). `fecha_ingreso` ya existe en `Empleado`, no se toca.
+2. `constantes.py`: agrego `FESTIVOS` (dict `{2026: [...], 2027: [...]}`) y `TOPE_DIAS_ANUALES = 12`, reutilizando la tabla de festivos de `reglas_vacaciones.md`.
+3. Nuevo `calculo_vacaciones.py` (módulo de dominio, sin tocar `rutas_empleados.py`): funciones puras `dias_habiles(fecha_inicio, fecha_fin, festivos)`, `cumple_antiguedad(fecha_ingreso, fecha_inicio)`, `dias_usados_en_anio(sesion, empleado_id, anio)`. Mantiene la lógica testeable y separada de las rutas.
+4. `esquemas.py`: agrego `VacacionCrear` (`fecha_inicio`, `fecha_fin`), `VacacionSalida` (incluye `dias_restantes`), `SaldoVacaciones` (`dias_usados`, `dias_disponibles`, `solicitudes`).
+5. Nuevo `rutas_vacaciones.py` con `router = APIRouter(prefix="/empleados/{empleado_id}/vacaciones")`, montado en `main.py` junto a los routers existentes:
+   - `POST`: valida en el orden exacto de la tabla de `convenciones_app.md` (404 → 409 → 400 fin<inicio → 400 cruza año → 400 año sin festivos → 400 antigüedad → 400 sin días hábiles → 400 tope anual), inserta y devuelve 201.
+   - `GET ?anio=`: si falta, usa el año actual; agrega saldo y lista de solicitudes.
+6. No se modifica `rutas_empleados.py` ni el comportamiento de HU-01 a HU-03.
+
+**Frontend**
+
+1. `api/vacaciones.js` (nuevo, mismo patrón que `api/empleados.js`): `solicitarVacaciones(empleadoId, datos)`, `obtenerSaldoVacaciones(empleadoId, anio)`.
+2. `components/FormularioVacaciones.jsx` (nuevo, calcado de `FormularioBaja.jsx`): recibe `empleado`, muestra saldo del año al abrir (`vacaciones-disponibles`), campos de fecha, botón enviar, y un solo mensaje de resultado (éxito o `detail`) en `vacaciones-mensaje`.
+3. `DirectorioEmpleados.jsx`: agrega botón `vacaciones-abrir-{id}` por fila, solo para empleados con `estado === "activo"`; abre el formulario (mismo patrón que `onBaja`/`onEditar`).
+4. `App.jsx`: estado para el empleado seleccionado y render condicional del `FormularioVacaciones`, igual que ya hace con `FormularioBaja`.
+
+**Verificación**: `GET /api/salud` responde y `npm run build` sin errores, antes de entregar.
+
+¿Apruebas este plan para empezar a implementar?
+¿Aprobar el plan? Escribe 'si' o tus comentarios: Agrega al plan: 1) el mensaje de éxito exacto en vacaciones-mensaje es "Solicitud registrada: N días hábiles. Te quedan M días hábiles en AAAA." 2) tras una solicitud exitosa, vacaciones-disponibles se actualiza con el nuevo saldo. 3) cumple_antiguedad acepta el aniversario exacto (mismo día y mes) y si fecha_ingreso es 29 de febrero el aniversario en año no bisiesto es el 1 de marzo. 4) se acepta si dias_habiles <= disponibles, y el error siempre dice "quedan N días hábiles" aunque N sea 1 o 0. El resto del plan está aprobado.
+  [desarrollador-plan] trabajando en app/ con Claude Code...
+  [desarrollador-plan] terminó en 7 turnos · 0.12 USD
+
+--- PLAN ---
+Confirmé la estructura actual (modelos.py, rutas_*.py, main.py, DirectorioEmpleados.jsx) y ya tengo lo necesario para afinar el plan con los comentarios de la revisión.
+
+# Plan de implementación · HU-10 (vacaciones)
+
+## 1. Modelo de datos (backend/modelos.py)
+- Nueva clase `Vacacion` (tabla `vacaciones`): `id`, `empleado_id` (FK a `empleados.id`), `fecha_inicio`, `fecha_fin` (Date), `dias_habiles` (int).
+- `fecha_ingreso` ya existe en `Empleado`; no requiere cambios.
+
+## 2. Reglas de negocio (nuevo módulo, p. ej. backend/vacaciones.py)
+- `es_festivo(fecha)` con la tabla de festivos 2026/2027 fija en código.
+- `dias_habiles_en(inicio, fin)`: cuenta días que no son sábado, domingo ni festivo (inclusive).
+- `cumple_antiguedad(fecha_ingreso, fecha_inicio)`: antigüedad ≥ 1 año; acepta el aniversario exacto (mismo día/mes); si `fecha_ingreso` es 29 de febrero y el año del aniversario no es bisiesto, el aniversario cae el 1 de marzo (se calcula con `date(año+1, mes, día)` capturando `ValueError` y usando el 1 de marzo como fallback).
+- `dias_usados_en_anio(empleado_id, anio)`: suma `dias_habiles` de solicitudes cuyo año coincide.
+- Validación agregada que aplica las reglas en el orden exacto de la tabla de errores (existe → baja → fecha_fin<inicio → cruce de año → año fuera de tabla → antigüedad → sin días hábiles → tope anual), usando `dias_habiles <= disponibles` como condición de aceptación (se puede usar exactamente lo que queda). El mensaje de tope siempre usa el patrón `"La solicitud excede los días disponibles: quedan N días hábiles"`, incluyendo cuando N es 1 o 0.
+
+## 3. Esquemas Pydantic (backend/esquemas.py)
+- `SolicitudVacacion` (entrada): `fecha_inicio`, `fecha_fin` como `date`.
+- `VacacionRespuesta` (201): `id`, `empleado_id`, `fecha_inicio`, `fecha_fin`, `dias_habiles`, `dias_restantes`.
+- `SaldoVacaciones` (GET): `empleado_id`, `anio`, `dias_usados`, `dias_disponibles`, `solicitudes: list[...]`.
+
+## 4. Endpoints (nuevo backend/rutas_vacaciones.py, registrado en main.py)
+- `POST /api/empleados/{empleado_id}/vacaciones` → valida en orden y responde 201 con `dias_restantes = 12 - dias_usados_en_anio(incluyendo la nueva)`.
+- `GET /api/empleados/{empleado_id}/vacaciones?anio=` → si falta `anio`, usa el año en curso; responde saldo y lista de solicitudes.
+
+## 5. Frontend
+- `components/FormularioVacaciones.jsx` (nuevo): campos `vacaciones-fecha-inicio`, `vacaciones-fecha-fin`, botón `vacaciones-enviar`, texto `vacaciones-disponibles` (saldo del año, obtenido vía GET al abrir), y `vacaciones-mensaje` para el resultado.
+  - Éxito: mensaje exacto `"Solicitud registrada: N días hábiles. Te quedan M días hábiles en AAAA."`.
+  - Error: se muestra el `detail` devuelto por la API tal cual.
+  - Tras un POST exitoso, se vuelve a pedir o actualizar el saldo (`GET /vacaciones`) para refrescar `vacaciones-disponibles` con el nuevo valor sin recargar la página.
+- `DirectorioEmpleados.jsx`: agregar botón `vacaciones-abrir-{empleado_id}` solo en filas con `estado === "activo"`, que abre/despliega el formulario anterior para ese empleado.
+- `App.jsx`: estado para el empleado con formulario abierto y función que llama a los dos endpoints nuevos.
+
+¿Apruebas este plan para proceder a implementarlo?
+
+¿Aprobar el plan? Escribe 'si' o tus comentarios: si
+  [desarrollador] trabajando en app/ con Claude Code...
+  [desarrollador] terminó en 36 turnos · 0.71 USD
+  [despliegue] trabajando en app/ con Claude Code...
+  [automatizador] trabajando en app/ con Claude Code...
+  [despliegue] terminó en 15 turnos · 0.16 USD
+  [automatizador] terminó en 17 turnos · 0.36 USD
+# Reporte · HU-10
+
+**Estado:** LISTA
+**Costo de agentes:** 1.56 USD
+**Ciclos de corrección:** 0
+
+(el reporte completo está en salida/HU-10/reporte.md)
