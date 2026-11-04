@@ -2,6 +2,12 @@
 
 Cambios a la fábrica de agentes, del más reciente al más antiguo. Cada versión indica el commit donde quedó.
 
+## [1.4.1] · 2026-11-04 · Documentación (`95689c4`)
+
+### Agregado
+- Docstrings en las funciones clave: la función principal de cada agente, los nodos con persona en el bucle (`pedir_aclaracion`, `aprobar_plan`), `verificar`, `filtrar_historia`, `pruebas_e2e`, `triage`, `reporte` y `construir_grafo`.
+- `README.md`, `CHANGELOG.md`, `salida/HU-10/decisiones.md` y la carpeta `evidencias/` (`1b9b17e`).
+
 ## [1.4.0] · 2026-11-04 · Reto HU-10 Solicitar vacaciones (`4f57ec3`)
 
 ### Resultado
