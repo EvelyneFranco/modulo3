@@ -91,7 +91,7 @@ Además de las pruebas que escribió la fábrica, revisé la app desplegada por 
 - el orden de validación cuando aplican dos errores a la vez;
 - el 422 con fecha inválida y el 409 con un empleado dado de baja.
 
-**Contenedores:** `docker compose ps` muestra `backend` (healthy, puerto 8000) y `frontend` (puerto 8080). En Docker Desktop se ven, además, el contenedor `hitl-postgres`, que guarda el checkpoint del flujo. Ver `capturas/docker-terminal.png` y `capturas/docker-desktop.png`.
+**Contenedores:** `docker compose ps` muestra `backend` (healthy, puerto 8000) y `frontend` (puerto 8080). En Docker Desktop se ve además el contenedor `hitl-postgres`, que guarda el checkpoint del flujo. Ver `capturas/docker-terminal.png` y `capturas/docker-desktop.png`.
 
 **Pantalla, en http://localhost:8080:**
 
