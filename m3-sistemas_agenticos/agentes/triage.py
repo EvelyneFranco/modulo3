@@ -32,6 +32,7 @@ El criterio de aceptación manda: si la prueba y la aplicación no coinciden, ga
 
 
 def diagnosticar(hu: str, fallos: str) -> Diagnostico:
+    """Decide qué agente corrige las pruebas fallidas, usando como referencia los criterios de todas las historias."""
     llm = ChatAnthropic(model=os.environ["MODEL"], max_tokens=2000)
     # Las pruebas de todas las historias corren juntas: el triage necesita los criterios de cada una
     criterios = "\n\n".join(f"### {r.parent.name}\n{r.read_text(encoding='utf-8')}"

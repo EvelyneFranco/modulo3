@@ -86,6 +86,7 @@ def herramienta_guardar_casos(destino: Path) -> Herramienta:
 
 
 def disenar_casos(criterios: Path, max_intentos: int = 2) -> Path:
+    """Agente 2: escribe casos_prueba.json con guardar_casos y lo corrige con validar_plan hasta max_intentos."""
     carpeta = criterios.parent
     destino = carpeta / "casos_prueba.json"
     lectura = [h for h in herramientas_archivos(lectura=[RAIZ / "contexto", carpeta], escritura=carpeta)

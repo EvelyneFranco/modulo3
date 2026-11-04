@@ -45,6 +45,7 @@ class Veredicto(BaseModel):
 
 
 def filtrar_historia(s: Estado) -> Estado:
+    """Primera capa de seguridad: un LLM revisa la historia como contenido no confiable y la marca si es sospechosa."""
     #Lee la variable DEFENSAS; si no existe, usa "1"
     #¿Por que? Es para efectos didácticos, si DEFENSAS=0 entonces depende si el modelo se resiste
     if os.environ.get("DEFENSAS", "1") == "0":
@@ -68,6 +69,7 @@ def despues_de_filtrar(s: Estado) -> Literal["analizar", "fin"]:
 
 # --- Flujo E2E -------------------------------------------------------------
 def pruebas_e2e(s: Estado) -> Estado:
+    """Corre las pruebas de API y E2E de todas las historias contra la app desplegada."""
     ok, log = ejecutar_pruebas(s["hu"])                                # determinista: pytest + Playwright
     return {"e2e_ok": ok, "log_e2e": log, "ciclos": s.get("ciclos", 0),
             "bitacora": [f"Pruebas E2E: {log.splitlines()[0]}"]}
@@ -78,6 +80,7 @@ def despues_de_e2e(s: Estado) -> Literal["triage", "fin"]:
 
 
 def triage(s: Estado) -> Estado:
+    """Supervisor del ciclo de corrección: enruta la falla al agente responsable y cuenta el ciclo."""
     d = diagnosticar(s["hu"], s["log_e2e"])                            # supervisor: enruta, no corrige
     return {"responsable": d.responsable, "instruccion": f"{d.causa}\n{d.instruccion}\n\n{s['log_e2e']}",
             "ciclos": s["ciclos"] + 1, "bitacora": [f"Triage → {d.responsable}: {d.causa}"]}
@@ -105,6 +108,7 @@ def corregir_despliegue(s: Estado) -> Estado:
 
 
 def reporte(s: Estado) -> Estado:
+    """Escribe salida/HU-xx/reporte.md con el estado final (LISTA, ESCALAR o BLOQUEADA), el costo y la bitácora."""
     carpeta = SALIDA / s.get("hu", "bloqueada")
     carpeta.mkdir(parents=True, exist_ok=True)
     estado = ("BLOQUEADA POR SEGURIDAD" if s.get("historia_sospechosa")
@@ -119,6 +123,7 @@ def reporte(s: Estado) -> Estado:
 
 
 def construir_grafo(checkpointer=None):
+    """Arma el grafo completo de la fábrica; sin checkpointer usa InMemorySaver."""
     g = StateGraph(Estado)
     for nombre, fn in [("filtrar_historia", filtrar_historia), ("analizar", s2.analizar),
                        ("pedir_aclaracion", s2.pedir_aclaracion), ("disenar_casos", s2.disenar),

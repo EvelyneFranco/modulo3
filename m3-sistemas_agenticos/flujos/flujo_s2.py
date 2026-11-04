@@ -49,6 +49,7 @@ def despues_de_analizar(s: Estado) -> Literal["pedir_aclaracion", "disenar_casos
 
 
 def pedir_aclaracion(s: Estado) -> Estado:
+    """Humano en el bucle: pausa el flujo con las preguntas abiertas; cualquier respuesta distinta de 'si' lo detiene."""
     respuesta = interrupt({"preguntas": s["preguntas"],
                            "pregunta": "Hay preguntas abiertas. ¿Continuar de todos modos? (si/no)"})
     return {"bitacora": [f"Preguntas abiertas: la persona respondió '{respuesta}'"],
@@ -70,6 +71,7 @@ def planificar(s: Estado) -> Estado:
 
 
 def aprobar_plan(s: Estado) -> Estado:
+    """Humano en el bucle: pausa el flujo hasta que una persona aprueba el plan o manda comentarios para rehacerlo."""
     decision = interrupt({"plan": s["plan"], "pregunta": "¿Aprobar el plan? Escribe 'si' o tus comentarios"})
     if decision.strip().lower() == "si":
         return {"plan_aprobado": True, "bitacora": ["Plan aprobado por una persona"]}
@@ -87,6 +89,7 @@ def construir(s: Estado) -> Estado:
 
 
 def verificar(s: Estado) -> Estado:
+    """Verificación determinista: la API responde y el frontend compila; no usa LLM."""
     ok, log = verificar_app()                                          # determinista, sin LLM
     return {"app_ok": ok, "log_verificacion": log, "bitacora": [f"Verificación: {'OK' if ok else 'FALLA'}"]}
 

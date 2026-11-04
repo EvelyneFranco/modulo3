@@ -66,6 +66,7 @@ def validar_gherkin(texto: str, mensajes: list[str] | None = None) -> list[str]:
 
 
 def generar_criterios(historia: Path, max_intentos: int = 2) -> Path:
+    """Agente 1: escribe salida/HU-xx/criterios.feature y lo corrige con validar_gherkin hasta max_intentos."""
     carpeta = SALIDA / hu_de(historia)
     destino = carpeta / "criterios.feature"
     herramientas = herramientas_archivos(lectura=[RAIZ / "historias", RAIZ / "contexto"], escritura=carpeta)
